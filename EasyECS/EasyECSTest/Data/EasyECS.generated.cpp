@@ -1,0 +1,5 @@
+#include "EasyECS.generated.h"
+#include "Battle/BulletData.easyecs.generated.cpp"
+#include "CharacterData.easyecs.generated.cpp"
+#include "ItemData.easyecs.generated.cpp"
+#include "RoleData.easyecs.generated.cpp"

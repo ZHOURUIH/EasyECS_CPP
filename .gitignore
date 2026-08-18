@@ -1,0 +1,18 @@
+Generator/Bin/
+Generator/Intermediate/
+EasyECS/Bin/
+EasyECS/Intermediate/
+.vs/
+*.user
+
+# 业务工程中的生成代码默认不提交。
+*.easyecs.generated.h
+*.easyecs.generated.cpp
+EasyECS.generated.h
+EasyECS.generated.cpp
+
+# EasyECSTest例外：提交完整生成代码，保证下载仓库后无需先编译Generator也能直接构建测试项目。
+!EasyECS/EasyECSTest/Data/**/*.easyecs.generated.h
+!EasyECS/EasyECSTest/Data/**/*.easyecs.generated.cpp
+!EasyECS/EasyECSTest/Data/EasyECS.generated.h
+!EasyECS/EasyECSTest/Data/EasyECS.generated.cpp
