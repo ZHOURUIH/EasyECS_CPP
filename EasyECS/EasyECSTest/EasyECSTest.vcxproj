@@ -17,7 +17,7 @@
     <RootNamespace>EasyECSTest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -31,16 +31,16 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props"/>
-  <ImportGroup Label="ExtensionSettings"/>
-  <ImportGroup Label="Shared"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform"/>
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros"/>
+  <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)Intermediate\EasyECSTest\$(Configuration)\</IntDir>
@@ -94,39 +94,34 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="GeneratorSmokeTest.h"/>
-    <ClInclude Include="RoleDataDictionaryBenchmark.h"/>
-    <ClInclude Include="RoleDataListBenchmark.h"/>
-    <ClInclude Include="Data\RoleData.h"/>
-    <ClInclude Include="Data\RoleData.easyecs.generated.h"/>
-    <ClInclude Include="Data\CharacterData.h"/>
-    <ClInclude Include="Data\CharacterData.easyecs.generated.h"/>
-    <ClInclude Include="Data\ItemData.hpp"/>
-    <ClInclude Include="Data\ItemData.easyecs.generated.h"/>
-    <ClInclude Include="Data\Battle\BulletData.h"/>
-    <ClInclude Include="Data\Battle\BulletData.easyecs.generated.h"/>
-    <ClInclude Include="Data\NormalData.h"/>
-    <ClInclude Include="Data\EasyECS.generated.h"/>
+    <ClInclude Include="GeneratorSmokeTest.h" />
+    <ClInclude Include="RoleDataDictionaryBenchmark.h" />
+    <ClInclude Include="RoleDataListBenchmark.h" />
+    <ClInclude Include="Data\RoleData.h" />
+    <ClInclude Include="Data\RoleData.easyecs.generated.h" />
+    <ClInclude Include="Data\CharacterData.h" />
+    <ClInclude Include="Data\CharacterData.easyecs.generated.h" />
+    <ClInclude Include="Data\ItemData.hpp" />
+    <ClInclude Include="Data\ItemData.easyecs.generated.h" />
+    <ClInclude Include="Data\Battle\BulletData.h" />
+    <ClInclude Include="Data\Battle\BulletData.easyecs.generated.h" />
+    <ClInclude Include="Data\NormalData.h" />
+    <ClInclude Include="Data\EasyECS.generated.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GeneratorSmokeTest.cpp"/>
-    <ClCompile Include="main.cpp"/>
-    <ClCompile Include="RoleDataDictionaryBenchmark.cpp"/>
-    <ClCompile Include="RoleDataListBenchmark.cpp"/>
-    <ClCompile Include="Data\EasyECS.generated.cpp"/>
+    <ClCompile Include="GeneratorSmokeTest.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="RoleDataDictionaryBenchmark.cpp" />
+    <ClCompile Include="RoleDataListBenchmark.cpp" />
+    <ClCompile Include="Data\EasyECS.generated.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GenerateEasyECS.bat"/>
-    <None Include="Data\RoleData.easyecs.generated.cpp"/>
-    <None Include="Data\CharacterData.easyecs.generated.cpp"/>
-    <None Include="Data\ItemData.easyecs.generated.cpp"/>
-    <None Include="Data\Battle\BulletData.easyecs.generated.cpp"/>
+    <None Include="GenerateEasyECS.bat" />
+    <None Include="Data\RoleData.easyecs.generated.cpp" />
+    <None Include="Data\CharacterData.easyecs.generated.cpp" />
+    <None Include="Data\ItemData.easyecs.generated.cpp" />
+    <None Include="Data\Battle\BulletData.easyecs.generated.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\EasyECS\EasyECS.vcxproj">
-      <Project>{6D8788C1-2D4C-433C-A09C-44B2BCB7A8A1}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
-  <ImportGroup Label="ExtensionTargets"/>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

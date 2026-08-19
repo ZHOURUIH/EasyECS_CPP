@@ -49,10 +49,32 @@ static int showMenuAndRun()
 		return 1;
 	}
 }
+EASY_ECS_FORCE_INLINE bool hasArgument(int argc, char** argv, const char* argument)
+{
+	for (int i = 1; i < argc; ++i)
+	{
+		if (std::strcmp(argv[i], argument) == 0) return true;
+	}
+	return false;
+}
+inline void pauseConsole()
+{
+	std::printf("\nPress Enter to exit...");
+	std::fflush(stdout);
+	std::getchar();
+}
+inline int finishProgram(int returnCode, bool pause)
+{
+	if (pause) pauseConsole();
+	return returnCode;
+}
 int main(int argc, char** argv)
 {
-	EasyECSRuntime::initConsole();
-	bool pause = !EasyECSRuntime::hasArgument(argc, argv, "--no-pause");
+#ifdef _WIN32
+	SetConsoleOutputCP(CP_UTF8);
+	SetConsoleCP(CP_UTF8);
+#endif
+	bool pause = !hasArgument(argc, argv, "--no-pause");
 	const char* testName = nullptr;
 	for (int i = 1; i < argc; ++i)
 	{
@@ -63,5 +85,5 @@ int main(int argc, char** argv)
 		}
 	}
 	int result = testName != nullptr ? runTestByName(testName) : showMenuAndRun();
-	return EasyECSRuntime::finishProgram(result, pause);
+	return finishProgram(result, pause);
 }

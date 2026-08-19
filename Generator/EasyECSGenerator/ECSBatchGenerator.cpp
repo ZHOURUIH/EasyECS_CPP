@@ -31,13 +31,21 @@ bool ECSBatchGenerator::generateDirectory(const string& rootDirectory, ECSBatchR
 		if (iter->is_directory())
 		{
 			string name = iter->path().filename().string();
-			if (name == ".git" || name == ".vs" || name == "Bin" || name == "Intermediate" ||
-				name == "build" || name == "build_vs2022") iter.disable_recursion_pending();
+			if (name == ".git" || name == ".vs" || name == "Bin" || name == "Intermediate" || name == "build" || name == "build_vs2022")
+			{
+				iter.disable_recursion_pending();
+			}
 			continue;
 		}
-		if (!iter->is_regular_file()) continue;
+		if (!iter->is_regular_file())
+		{
+			continue;
+		}
 		string fileName = iter->path().filename().string();
-		if (isSourceHeader(fileName) && !isGeneratedHeader(fileName)) sourceFiles.push_back(iter->path());
+		if (isSourceHeader(fileName) && !isGeneratedHeader(fileName))
+		{
+			sourceFiles.push_back(iter->path());
+		}
 	}
 	if (ec)
 	{
@@ -110,27 +118,48 @@ bool ECSBatchGenerator::generateDirectory(const string& rootDirectory, ECSBatchR
 	}
 	unordered_set<string> expectedGeneratedFiles;
 	for (const string& includePath : generatedHeaderIncludes)
+	{
 		expectedGeneratedFiles.insert(fs::absolute(rootPath / fs::path(includePath)).lexically_normal().generic_string());
+	}
 	for (const string& includePath : generatedCppIncludes)
+	{
 		expectedGeneratedFiles.insert(fs::absolute(rootPath / fs::path(includePath)).lexically_normal().generic_string());
+	}
 	fs::recursive_directory_iterator cleanIter(rootPath, fs::directory_options::skip_permission_denied, ec);
 	for (; !ec && cleanIter != end; cleanIter.increment(ec))
 	{
-		if (!cleanIter->is_regular_file()) continue;
+		if (!cleanIter->is_regular_file())
+		{
+			continue;
+		}
 		string fileName = cleanIter->path().filename().string();
-		if (!hasSuffix(fileName, ".easyecs.generated.h") && !hasSuffix(fileName, ".easyecs.generated.cpp")) continue;
+		if (!hasSuffix(fileName, ".easyecs.generated.h") && !hasSuffix(fileName, ".easyecs.generated.cpp"))
+		{
+			continue;
+		}
 		string normalized = fs::absolute(cleanIter->path()).lexically_normal().generic_string();
-		if (expectedGeneratedFiles.find(normalized) == expectedGeneratedFiles.end()) fs::remove(cleanIter->path(), ec);
+		if (expectedGeneratedFiles.find(normalized) == expectedGeneratedFiles.end())
+		{
+			fs::remove(cleanIter->path(), ec);
+		}
 		ec.clear();
 	}
 	sort(generatedHeaderIncludes.begin(), generatedHeaderIncludes.end());
 	sort(generatedCppIncludes.begin(), generatedCppIncludes.end());
 	string aggregateHeader = "#pragma once\n";
-	for (const string& includePath : generatedHeaderIncludes) aggregateHeader += "#include \"" + includePath + "\"\n";
+	for (const string& includePath : generatedHeaderIncludes)
+	{
+		aggregateHeader += "#include \"" + includePath + "\"\n";
+	}
 	string aggregateCpp = "#include \"EasyECS.generated.h\"\n";
-	for (const string& includePath : generatedCppIncludes) aggregateCpp += "#include \"" + includePath + "\"\n";
-	if (!writeFileIfChanged((rootPath / "EasyECS.generated.h").string(), aggregateHeader, error)) return false;
-	if (!writeFileIfChanged((rootPath / "EasyECS.generated.cpp").string(), aggregateCpp, error)) return false;
+	for (const string& includePath : generatedCppIncludes)
+	{
+		aggregateCpp += "#include \"" + includePath + "\"\n";
+	}
+	if (!writeFileIfChanged((rootPath / "EasyECS.generated.h").string(), aggregateHeader, error))
+	{
+		return false;
+	}
 	return true;
 }
 bool ECSBatchGenerator::writeFileIfChanged(const string& filePath, const string& content, string& error)
@@ -140,7 +169,10 @@ bool ECSBatchGenerator::writeFileIfChanged(const string& filePath, const string&
 	{
 		stringstream buffer;
 		buffer << input.rdbuf();
-		if (buffer.str() == content) return true;
+		if (buffer.str() == content)
+		{
+			return true;
+		}
 	}
 	ofstream output(filePath, ios::binary | ios::trunc);
 	if (!output.is_open())
@@ -181,10 +213,16 @@ string ECSBatchGenerator::makeQualifiedName(const ECSStructInfo& info)
 	string value;
 	for (const string& item : info.mNamespaceList)
 	{
-		if (!value.empty()) value += "::";
+		if (!value.empty())
+		{
+			value += "::";
+		}
 		value += item;
 	}
-	if (!value.empty()) value += "::";
+	if (!value.empty())
+	{
+		value += "::";
+	}
 	value += info.mName;
 	return value;
 }
@@ -192,6 +230,9 @@ string ECSBatchGenerator::makeRelativeInclude(const string& rootDirectory, const
 {
 	error_code ec;
 	fs::path relative = fs::relative(fs::path(filePath), fs::path(rootDirectory), ec);
-	if (ec) relative = fs::path(filePath).filename();
+	if (ec)
+	{
+		relative = fs::path(filePath).filename();
+	}
 	return relative.generic_string();
 }

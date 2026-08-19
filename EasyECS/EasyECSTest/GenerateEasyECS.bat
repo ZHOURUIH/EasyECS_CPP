@@ -17,7 +17,7 @@ if not defined GENERATOR (
 )
 echo [EasyECS] Generator: %GENERATOR%
 echo [EasyECS] Scan: %~dp0Data
-"%GENERATOR%" --no-pause --scan "%~dp0Data"
+"%GENERATOR%" --scan "%~dp0Data"
 if errorlevel 1 exit /b %errorlevel%
 exit /b 0
 

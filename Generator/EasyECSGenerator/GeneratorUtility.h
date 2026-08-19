@@ -30,9 +30,4 @@ inline void pauseConsole()
 	std::fflush(stdout);
 	std::getchar();
 }
-inline int finishProgram(int returnCode, bool pause)
-{
-	if (pause) pauseConsole();
-	return returnCode;
-}
 }

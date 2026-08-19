@@ -100,7 +100,13 @@ bool ECSParser::parseFile(const string& filePath, vector<ECSStructInfo>& structL
 				break;
 			}
 		}
-		if (!insideECSStruct)
+		string easyECSHeader = "EasyECS.h";
+		string fileName = "";
+		if (filePath.size() >= easyECSHeader.length())
+		{
+			fileName = filePath.substr(filePath.size() - easyECSHeader.length(), easyECSHeader.length());
+		}
+		if (!insideECSStruct && fileName != "EasyECS.h")
 		{
 			error = formatError(filePath, getLineNumber(content, position), "", "", "NOT_ECS() can only be used inside an ECS() struct");
 			return false;
