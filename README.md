@@ -25,16 +25,14 @@ EasyECS/
    ├─ EasyECS.sln
    ├─ EasyECS/
    │  ├─ EasyECS.h
-   │  ├─ EasyECS.cpp
    │  └─ EasyECSIndexMap.h
    └─ EasyECSTest/
 ```
 
-如果只是把EasyECS接入自己的工程，实际运行时只需要这3个Runtime文件：
+如果只是把EasyECS接入自己的工程，实际运行时只需要这2个Runtime文件：
 
 ```text
 EasyECS.h
-EasyECS.cpp
 EasyECSIndexMap.h
 ```
 
@@ -78,6 +76,7 @@ Data/Battle/BulletData.easyecs.generated.h/.cpp
 不存在EasyECSGenerator.exe  -> 直接使用仓库中已提交的生成代码
 生成代码也不完整            -> 才会报错并要求先编译Generator
 ```
+`注意:Data/EasyECS.generated.cpp已经不再自动生成,因为需要兼容cpp工程可能使用的UnityBuild,所以generate.cpp的编译需要自行根据自己的项目情况处理,示例测试项目中为了方便是带unitybuild文件的,也就是EasyECS.generated.cpp`
 
 因此只是下载代码、查看Benchmark或运行测试时，不需要先处理Generator工程。只有修改了`Data`中的ECS定义并希望重新生成代码时，才需要先编译Generator。
 
@@ -183,12 +182,6 @@ Generator一般只需要在Generator源码发生变化时重新编译。
 
 ## 第2步：把Runtime加入自己的VS工程
 
-把下面的`.cpp`加入自己的项目：
-
-```text
-ThirdParty/EasyECS/EasyECS/EasyECS/EasyECS.cpp
-```
-
 `EasyECS.h`和`EasyECSIndexMap.h`只需要能被Include，不需要单独编译。
 
 在：
@@ -216,18 +209,6 @@ $(ProjectDir)Data
 ISO C++17 (/std:c++17)
 ```
 
-建议同时在：
-
-```text
-项目属性 → C/C++ → 命令行 → 其他选项
-```
-
-加入：
-
-```text
-/utf-8
-```
-
 ## 第3步：第一次生成代码
 
 第一次需要先生成统一入口文件。按照上面的推荐目录，如果当前CMD位于`YourProject`根目录，直接执行：
@@ -242,6 +223,8 @@ ThirdParty\EasyECS\Generator\Bin\Release\EasyECSGenerator.exe --scan "YourGame\D
 D:\Project\ThirdParty\EasyECS\Generator\Bin\Release\EasyECSGenerator.exe --scan "D:\Project\YourGame\Data"
 ```
 
+上面的"YourGame\Data"表示生成器需要扫描的目录,仅在此目录中带有ECS()宏的结构体才会生成对应的ECSList
+
 Generator会在`Data`目录生成：
 
 ```text
@@ -249,42 +232,6 @@ RoleData.easyecs.generated.h
 RoleData.easyecs.generated.cpp
 ...
 EasyECS.generated.h
-EasyECS.generated.cpp
-```
-
-然后只把：
-
-```text
-Data/EasyECS.generated.cpp
-```
-
-加入Visual Studio工程。
-
-以后新增多少个`ECS()`结构体，都不需要再往VS工程里添加新的generated cpp，统一入口会自动更新。
-
-## 第4步：加入Pre-Build自动生成
-
-在：
-
-```text
-项目属性 → 生成事件 → 预生成事件 → 命令行
-```
-
-加入：
-
-```bat
-"$(SolutionDir)ThirdParty\EasyECS\Generator\Bin\Release\EasyECSGenerator.exe" --no-pause --scan "$(ProjectDir)Data"
-if errorlevel 1 exit /b %errorlevel%
-```
-
-至此以后正常按Visual Studio的Build即可：
-
-```text
-修改ECS struct
-→ 点击Build
-→ Pre-Build自动生成
-→ 编译EasyECS.generated.cpp
-→ 完成
 ```
 
 这就是Windows下推荐的完整工作流。
@@ -293,10 +240,7 @@ if errorlevel 1 exit /b %errorlevel%
 
 ```text
 1. 编译一次EasyECSGenerator.exe
-2. 自己工程编译EasyECS.cpp
-3. Include EasyECS Runtime目录和Data目录
-4. Pre-Build执行Generator --scan Data
-5. 工程只编译EasyECS.generated.cpp
+2. 执行Generator --scan 需要扫描的目录
 ```
 
 ---
@@ -339,9 +283,7 @@ clang++ -std=c++17 -O2 \
 ## 第2步：生成代码
 
 ```bash
-./ThirdParty/EasyECS/Generator/Bin/Linux/EasyECSGenerator \
-    --no-pause \
-    --scan ./Data
+./ThirdParty/EasyECS/Generator/Bin/Linux/EasyECSGenerator --scan ./Data
 ```
 
 ## 第3步：编译自己的程序
@@ -352,28 +294,9 @@ clang++ -std=c++17 -O2 \
 g++ -std=c++17 -O2 \
     -I./ThirdParty/EasyECS/EasyECS/EasyECS \
     -I./Data \
-    ./ThirdParty/EasyECS/EasyECS/EasyECS/EasyECS.cpp \
-    ./Data/EasyECS.generated.cpp \
     ./main.cpp \
     -o ./app
 ```
-
-同样只编译：
-
-```text
-EasyECS.cpp
-EasyECS.generated.cpp
-你的业务cpp
-```
-
-不要再单独编译：
-
-```text
-RoleData.easyecs.generated.cpp
-XXX.easyecs.generated.cpp
-```
-
-因为它们已经由`EasyECS.generated.cpp`统一包含。
 
 ## Linux自动生成
 
@@ -387,14 +310,12 @@ EASY_ECS_GENERATOR := $(EASY_ECS_ROOT)/Generator/Bin/Linux/EasyECSGenerator
 .PHONY: easyecs
 
 easyecs:
-	$(EASY_ECS_GENERATOR) --no-pause --scan $(ECS_DATA)
+	$(EASY_ECS_GENERATOR) --scan $(ECS_DATA)
 
 app: easyecs
 	g++ -std=c++17 -O2 \
 		-I$(EASY_ECS_ROOT)/EasyECS/EasyECS \
 		-I$(ECS_DATA) \
-		$(EASY_ECS_ROOT)/EasyECS/EasyECS/EasyECS.cpp \
-		$(ECS_DATA)/EasyECS.generated.cpp \
 		main.cpp \
 		-o app
 ```
@@ -403,12 +324,6 @@ app: easyecs
 
 ```text
 编译前运行Generator
-+
-编译EasyECS.cpp
-+
-编译Data/EasyECS.generated.cpp
-+
-添加两个Include目录
 ```
 
 不需要让构建系统知道每一个单独的generated文件。
@@ -426,13 +341,13 @@ EasyECSGenerator.exe --scan "C:\Project\Data"
 自动Build：
 
 ```bat
-EasyECSGenerator.exe --no-pause --scan "C:\Project\Data"
+EasyECSGenerator.exe --scan "C:\Project\Data"
 ```
 
 Linux：
 
 ```bash
-./EasyECSGenerator --no-pause --scan ./Data
+./EasyECSGenerator --scan ./Data
 ```
 
 Generator递归扫描`.h/.hpp`，每个包含`ECS()`的源头文件旁生成：
@@ -446,7 +361,6 @@ Generator递归扫描`.h/.hpp`，每个包含`ECS()`的源头文件旁生成：
 
 ```text
 EasyECS.generated.h
-EasyECS.generated.cpp
 ```
 
 特性：
@@ -1014,11 +928,11 @@ tryGetRef
 Windows：
 
 ```bat
-EasyECSTest.exe smoke --no-pause
-EasyECSTest.exe list --no-pause
-EasyECSTest.exe dictionary --no-pause
-EasyECSTest.exe fuzz --no-pause
-EasyECSTest.exe all --no-pause
+EasyECSTest.exe smoke
+EasyECSTest.exe list
+EasyECSTest.exe dictionary
+EasyECSTest.exe fuzz
+EasyECSTest.exe all
 ```
 
 含义：
